@@ -5,7 +5,7 @@ function App() {
   
   return (
     <>
-      <main className='grid grid-col-1 justify-center gap-2 p-1'>
+      <main className='grid grid-col-1 justify-center gap-2 p-3'>
         <Title />
         <Search />
       </main>
