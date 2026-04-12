@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent } from "react";
 import { FaSearch } from "react-icons/fa";
+import DomLists from "./domLists";
 
 function Search() {
     const [searchInput,setSearchInput]=useState<string>('');
@@ -39,24 +40,7 @@ function Search() {
                 </div>
 
                 {showList && <div className="gap-1 flex flex-col items-center">
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
-                    <p>1</p>
-                    <p>2</p>
-                    <p>3</p>
+                    <DomLists />
                 </div>}
 
             </div>
