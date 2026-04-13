@@ -1,15 +1,18 @@
-import { useState, type ChangeEvent } from "react";
+import {  useState, type ChangeEvent } from "react";
 import { FaSearch } from "react-icons/fa";
-import DomLists from "./domLists";
 
-function Search() {
-    const [searchInput,setSearchInput]=useState<string>('');
+
+
+interface SearchProps {
+  onSearch: (value: string) => void;
+}
+
+function Search({onSearch}:SearchProps) {
+
+
+    //const [searchInput,setSearchInput]=useState<string>('');
     const [showList,setShowList]=useState<boolean>(false);
 
-    function searchHandler(event:ChangeEvent<HTMLInputElement>){
-        setSearchInput(event.target.value);
-        console.log(event.target.value);
-    }
     function showingList(){
         if(!showList){
             setShowList(true);
@@ -27,8 +30,8 @@ function Search() {
                 <div className="flex items-center justify-center">
                     <div className=" h-[35px] w-[225px] bg-[#cfcfcf] text-[#020026] rounded-lg p-[5px] px-[9px] 
                     flex items-center sm:w-[325px] md:w-[350px] ">
-                        <input type='text' placeholder='search here' value={searchInput} 
-                        onChange={searchHandler} id='inputsearch' name="inputsearch"
+                        <input type='text' placeholder='search here'
+                        onChange={(e)=>onSearch(e.target.value)} id='inputsearch' name="inputsearch"
                         className="border-none outline-none bg-[#cfcfcf] text-[#020026] h-[30px] w-[200px]
                         px-1 placeholder-[#020026] sm:w-[300px] md:w-[325px] " 
                         onClick={showingList}/>
@@ -39,9 +42,14 @@ function Search() {
 
                 </div>
 
-                {showList && <div className="gap-1 flex flex-col items-center">
-                    <DomLists />
-                </div>}
+                {/* {showList && <div className="gap-1 flex flex-col items-center">
+                    {filterLists.map((item)=>(
+                        <div key={item.id} 
+                        className="cursor-pointer text-md m-[2px]">
+                            {item.data}
+                        </div>
+                    ))}        
+                </div>} */}
 
             </div>
 
