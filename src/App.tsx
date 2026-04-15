@@ -1,4 +1,4 @@
-import Search from './components/searchBar'
+
 import Title from './components/title'
 import DomLists from './components/domLists';
 import { useState,useEffect } from 'react';
@@ -11,7 +11,7 @@ export interface DataList{
 
 function App() {
 
-  const [search,setSearch]=useState<string>("");
+ 
   const [data,setData]=useState<DataList[]>([]);
   const [error,setError]=useState<string>('');
   
@@ -37,20 +37,14 @@ function App() {
   useEffect(()=>{
     fetchingData();
   },[]);
-
-  
-    const filterLists=data.filter(item=>item.data.toString().includes(search));
    
   
   return (
     <>
       <main className='grid grid-cols-1 justify-center gap-2 p-3 '>
         <Title />
-        <div className='flex justify-center'>
-          <Search onSearch={setSearch} />
-        </div>
         <div className='mt-8'>
-          <DomLists lists={filterLists} />
+          
         </div>
       </main>
     </>
