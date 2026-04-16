@@ -1,50 +1,23 @@
 
 import Title from './components/title'
-import DomLists from './components/domLists';
-import { useState,useEffect } from 'react';
+import DataList from './components/domLists'
+import { Typography } from "@mui/material";
 
-
-export interface DataList{
-    id:number,
-    data:number
-  }
 
 function App() {
-
- 
-  const [data,setData]=useState<DataList[]>([]);
-  const [error,setError]=useState<string>('');
-  
-  async function fetchingData(){
-    const response = await fetch(`./datas/datas.json`)
-  
-    try{
-      if(!response.ok){
-        throw new Error(`couln't fetch datas ${response.status}`);
-      }
-      const result = await response.json(); 
-      setData(result);
-      console.log(result);
-              
-    }
-    catch(error){
-      setError(`cant't fetch datas ${error}`);
-       console.log(error);
-              
-    }
-  }
-  
-  useEffect(()=>{
-    fetchingData();
-  },[]);
-   
   
   return (
     <>
-      <main className='grid grid-cols-1 justify-center gap-2 p-3 '>
+      <main className='grid grid-cols-1 justify-center gap-2 p-3 md:grid-cols-[minmax(450px,500px)]
+      lg:grid-cols-[minmax(575px,625px)]'>
         <Title />
-        <div className='mt-8'>
-          
+
+        <Typography variant="h6" component="h6" style={{textAlign:'center',color:'burlywood',fontSize:'19px'}}>
+          10,000 items rendering
+        </Typography>
+
+        <div className='mt-1'>
+          <DataList />
         </div>
       </main>
     </>

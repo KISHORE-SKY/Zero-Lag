@@ -1,24 +1,25 @@
-import type { DataList } from '../App';
 
-interface DomListProps{
-    lists:DataList[]        
-}
+import { generateDatas ,type ListItem } from './data'
 
-function DomLists({lists}:DomListProps) {
-    
-    
+
+function DataList(){
+    const data: ListItem[]=generateDatas(10000)
     return(
         <>
-            <section className="h-auto flex flex-col items-center gap-2 w-full justify-center ">
-                {lists.map((item)=>(
-                    <div key={item.id} className="border-[1px] border-solid border-[rgba(0,0,0,0.5)] w-full flex justify-center 
-                    text-lg p-2 rounded-lg font-semibold bg-[rgba(0,0,0,0.1)]">
-                        {item.data}
+            <div className='grid justify-center grid-cols-1 items-center gap-2 w-full h-[385px] 
+            overflow-auto  '>
+
+                {data.map((item)=>(
+                    <div key={item.id} className='bg-[rgba(0,0,0,0.1)] w-full text-center text-sm'>
+                       index - {item.data}  
                     </div>
-                ))}                
-            </section>
+                ))}
+            </div>
         </>
     );
+
+
 }
 
-export default DomLists;
+
+export default DataList;
