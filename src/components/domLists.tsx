@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { generateDatas ,type ListItem } from './data'
 
 
@@ -16,11 +16,33 @@ function DataList(){
       console.log(event.currentTarget.scrollTop);
        
     }
-    let startIndex:number = Math.max(0, Math.floor(scrolling / 30) - 2);
-    let endIndex:number = startIndex + Math.ceil(boxHeight/itemHeight);
+    let startIndex:number = Math.max(0, Math.floor(scrolling / itemHeight) - 2);
+    let endIndex:number = startIndex + Math.ceil(boxHeight / itemHeight);
     const visibleList = data.slice(startIndex, endIndex + 2);
     let offset = startIndex * itemHeight;
+    
+    const lastRef = useRef<HTMLDivElement | null>(null);
+     useEffect(()=>{
 
+        if(!lastRef?.current) return;
+
+           const observer = new IntersectionObserver((entries)=>{
+            console.log(entries);
+            const entry = entries[0];
+            
+                if(entry.isIntersecting){
+                   console.log(`loading more`);
+                }
+            },{
+                threshold:0.5
+            })
+            observer.observe(lastRef?.current);
+
+            return observer.disconnect();
+        },[visibleList])               
+        
+        
+    
 
     return(
         <>
@@ -33,9 +55,10 @@ function DataList(){
                     <div className={`flex flex-col items-center justify-center absolute top-0 left-0 
                     w-full `} style={{ transform: `translateY(${offset}px)` }}>
 
-                        {visibleList.map((item)=>(
+                        {visibleList.map((item,index)=>(
+                            
                             <div key={item.id} className={`bg-[#c7c7c7] w-full text-center text-md 
-                            h-[30px] mb-[6px] `}>
+                            h-[30px] mb-[6px] `} ref={index === visibleList.length-1 ? lastRef : null }>
                                 List item - {item.data}  
                             </div>
                         ))}
