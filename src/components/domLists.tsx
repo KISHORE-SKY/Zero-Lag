@@ -1,10 +1,15 @@
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState,useMemo } from 'react';
 import { generateDatas ,type ListItem } from './data'
+
+//usememo hook
 
 
 function DataList(){
-    const data: ListItem[]=generateDatas(10000)
+
+    const data: ListItem[]=useMemo(()=>{
+       return generateDatas(10000)
+    },[])
 
     const [scrolling,setScrolling]=useState<number>(0);
 
@@ -16,13 +21,15 @@ function DataList(){
       console.log(event.currentTarget.scrollTop);
        
     }
+
     let startIndex:number = Math.max(0, Math.floor(scrolling / itemHeight) - 2);
     let endIndex:number = startIndex + Math.ceil(boxHeight / itemHeight);
     const visibleList = data.slice(startIndex, endIndex + 2);
     let offset = startIndex * itemHeight;
     
     const lastRef = useRef<HTMLDivElement | null>(null);
-     useEffect(()=>{
+
+    useEffect(()=>{
 
         if(!lastRef?.current) return;
 
