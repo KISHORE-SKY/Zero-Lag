@@ -2,13 +2,13 @@
 import { useEffect, useRef, useState,useMemo } from 'react';
 import { generateDatas ,type ListItem } from './data'
 
-//usememo hook
+//requestanimationframe()
 
 
 function DataList(){
 
     const data: ListItem[]=useMemo(()=>{
-       return generateDatas(10000)
+       return generateDatas(750000)
     },[])
 
     const [scrolling,setScrolling]=useState<number>(0);
@@ -22,11 +22,33 @@ function DataList(){
        
     }
 
-    let startIndex:number = Math.max(0, Math.floor(scrolling / itemHeight) - 2);
-    let endIndex:number = startIndex + Math.ceil(boxHeight / itemHeight);
-    const visibleList = data.slice(startIndex, endIndex + 2);
-    let offset = startIndex * itemHeight;
+    let startIndex:number = 0;
+    let endIndex:number = 0; 
+    let visibleList:any[]=[]; 
+    let offset:number = 0; 
     
+    function getVisible(){
+        startIndex = Math.max(0, Math.floor(scrolling / itemHeight) - 2);
+        endIndex = startIndex + Math.ceil(boxHeight / itemHeight);
+        visibleList = data.slice(startIndex, endIndex + 2);
+        offset = startIndex * itemHeight;
+    }
+
+    let ticking:boolean = false;
+    function onScroll() {
+        if(!ticking){
+            requestAnimationFrame(()=>{
+                getVisible();
+                
+                console.log('rFA: calculating');
+                    
+                ticking = false;
+            });
+            ticking = true;
+        }
+    } 
+    window.addEventListener('scroll',onScroll);
+
     const lastRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(()=>{
@@ -48,7 +70,7 @@ function DataList(){
             return observer.disconnect();
         },[visibleList])               
         
-        
+
     
 
     return(
