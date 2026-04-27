@@ -1,74 +1,56 @@
 
-import { useEffect, useRef, useState,useMemo } from 'react';
-import { generateDatas ,type ListItem } from './data'
-
-//requestanimationframe()
+import { useMemo, useState, useEffect } from "react";
+import { type ListItem , generateDatas} from "./data.ts";
 
 
 function DataList(){
 
-    const data: ListItem[]=useMemo(()=>{
-       return generateDatas(750000)
-    },[])
+    //reciever of the listitems 
+    const listDatas:ListItem[] = useMemo(()=>{
 
+        //total count of list items
+        return generateDatas(10000); 
+    },[]);
+
+    //list item height
+    const itemHeight:number = 30;
+    //count list vissible
+    const visibleCount:number = 12;
+    const boxHeight:number = 385;
+    //observe the scrollTop
     const [scrolling,setScrolling]=useState<number>(0);
+  
+    //toggle logic of request animation frame
+    const [ticking,setTicking]=useState<boolean>(false);
 
-    const itemHeight:number=30;
-    const boxHeight:number=385;
+    const [vissibleItems,setVissibleItems] = useState<ListItem[]>([]);
+    const [startIndex,setStartIndex] = useState<number>(0);
+    const [endIndex,setEndIndex] = useState<number>(0);
+    const [offset,setOffSet] = useState<number>(0);
 
-    function handleScroll(event:React.UIEvent<HTMLElement>){
-      setScrolling(event.currentTarget.scrollTop); 
-      console.log(event.currentTarget.scrollTop);
-       
-    }
-
-    let startIndex:number = 0;
-    let endIndex:number = 0; 
-    let visibleList:any[]=[]; 
-    let offset:number = 0; 
     
-    function getVisible(){
-        startIndex = Math.max(0, Math.floor(scrolling / itemHeight) - 2);
-        endIndex = startIndex + Math.ceil(boxHeight / itemHeight);
-        visibleList = data.slice(startIndex, endIndex + 2);
-        offset = startIndex * itemHeight;
+    function scrollHandler(event: React.UIEvent<HTMLDivElement>){
+        const scrollTop = event.currentTarget.scrollTop;
+        setScrolling(scrollTop);
+        console.log(scrollTop);
+        
     }
 
-    let ticking:boolean = false;
-    function onScroll() {
-        if(!ticking){
-            requestAnimationFrame(()=>{
-                getVisible();
-                
-                console.log('rFA: calculating');
-                    
-                ticking = false;
-            });
-            ticking = true;
-        }
-    } 
-    window.addEventListener('scroll',onScroll);
-
-    const lastRef = useRef<HTMLDivElement | null>(null);
-
+    
     useEffect(()=>{
-
-        if(!lastRef?.current) return;
-
-           const observer = new IntersectionObserver((entries)=>{
-            console.log(entries);
-            const entry = entries[0];
-            
-                if(entry.isIntersecting){
-                   console.log(`loading more`);
-                }
-            },{
-                threshold:0.5
-            })
-            observer.observe(lastRef?.current);
-
-            return observer.disconnect();
-        },[visibleList])               
+        window.addEventListener('scroll',()=>{
+            if(!ticking){
+                requestAnimationFrame(()=>{
+                    setStartIndex(Math.max(0,Math.floor(scrolling/visibleCount)-2));
+                    setEndIndex(startIndex + Math.ceil(boxHeight/itemHeight));
+                    setVissibleItems(listDatas.slice(startIndex,endIndex+2));
+                    setOffSet(startIndex*itemHeight);
+                    setTicking(false);
+                });
+            setTicking(true);
+            }
+        })
+    },[startIndex,endIndex,vissibleItems,offset,ticking]);
         
 
     
@@ -78,21 +60,23 @@ function DataList(){
             <div className='grid justify-center grid-cols-1 items-center w-full h-[385px] 
             overflow-y-auto [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-thumb]:h-[60px]
             [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-[#e8e8e8]
-            [&::-webkit-scrollbar-thumb]:bg-[#fc0b58] relative ' onScroll={handleScroll}>
+            [&::-webkit-scrollbar-thumb]:bg-[#fc0b58] relative ' onScroll={scrollHandler}>
 
-                <div style={{ height: `${data.length * 30}px` }} />
+                
                     <div className={`flex flex-col items-center justify-center absolute top-0 left-0 
-                    w-full `} style={{ transform: `translateY(${offset}px)` }}>
+                    w-full `} >
 
-                        {visibleList.map((item,index)=>(
-                            
+                        {vissibleItems.map((item)=>(
                             <div key={item.id} className={`bg-[#c7c7c7] w-full text-center text-md 
-                            h-[30px] mb-[6px] `} ref={index === visibleList.length-1 ? lastRef : null }>
+                            h-[30px] mb-[6px] `} >
                                 List item - {item.data}  
                             </div>
-                        ))}
+                        ))
+                        }
+                        
                     </div>
                 </div>
+            <div/>
             
         </>
     );
