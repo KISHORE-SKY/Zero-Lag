@@ -17,8 +17,6 @@ function DataList(){
 
     //observe the scrollTop
     const [scrolling,setScrolling]=useState<number>(0);
-    let ticking = false;
-
     const scrollRef = useRef<any>(0);
 
     function scrollHandler(event: React.UIEvent<HTMLDivElement>){
@@ -26,11 +24,6 @@ function DataList(){
         const scrollTop = event.currentTarget.scrollTop;
         console.log(scrollTop);
 
-        requestAnimationFrame(()=>{
-            scrollRef.current=scrollTop;
-            setScrolling(scrollTop);
-        });
-        
     }
 
 
