@@ -6,9 +6,8 @@ import { type ListItem , generateDatas} from "./data.ts";
 function DataList(){
  
     const listDatas:ListItem[] = useMemo(()=>{
-
         //total count of list items
-        return generateDatas(50000); 
+        return generateDatas(100000); 
     },[]);
 
     //list item and Box div height
@@ -17,13 +16,24 @@ function DataList(){
 
     //observe the scrollTop
     const [scrolling,setScrolling]=useState<number>(0);
-    const scrollRef = useRef<any>(0);
+    const lastItemRef = useRef<number>(0);
+    const isRunningRef = useRef(false);
 
     function scrollHandler(event: React.UIEvent<HTMLDivElement>){
 
         const scrollTop = event.currentTarget.scrollTop;
         console.log(scrollTop);
+        // setScrolling(scrollTop);
+        lastItemRef.current = scrollTop;
+        if(isRunningRef.current) return;
 
+        isRunningRef.current = true;
+
+        requestAnimationFrame(()=>{
+            setScrolling(lastItemRef.current);
+
+            isRunningRef.current = false;
+        })
     }
 
 
@@ -32,8 +42,7 @@ function DataList(){
     let letsEnds = letStart + Math.ceil(boxHeight/itemHeight);
     let offset=letStart*itemHeight;
     let vissibleItems = listDatas.slice(letStart,letsEnds+4);
-   
-   const coverBoxHeight = listDatas.length * itemHeight; 
+    const coverBoxHeight = listDatas.length * itemHeight; 
    
 
     return(
@@ -41,7 +50,7 @@ function DataList(){
             <div className='grid justify-center grid-cols-1 items-center w-full h-[385px] 
             overflow-y-auto [&::-webkit-scrollbar]:w-[8px] [&::-webkit-scrollbar-thumb]:h-[60px]
             [&::-webkit-scrollbar-thumb]:rounded-lg [&::-webkit-scrollbar-track]:bg-[#e8e8e8]
-            [&::-webkit-scrollbar-thumb]:bg-[#fc0b58] relative ' onScroll={scrollHandler} ref={scrollRef}>
+            [&::-webkit-scrollbar-thumb]:bg-[#fc0b58] relative ' onScroll={scrollHandler} >
 
                 <div style={{"height":`${coverBoxHeight}px`}} />
 
